@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: webapp
-        image: ajju13/pyserverinfo:27
+        image: ajju13/pyserverinfo:28
         ports:
           - containerPort: 3000
 
