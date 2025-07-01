@@ -10,7 +10,7 @@ def fetchDetails():
 
 @app.route("/")
 def hello_world():
-    return "<p>Deployment of a simple Web Application using Python Flask Framework in AWS EKS cluster.</p>"
+    return "<p>Deployment of a simple Python Flask Web Application using Jenkins & Argocd in Kind Cluster.</p>"
 
 @app.route("/health")
 def health():
