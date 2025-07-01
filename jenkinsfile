@@ -1,0 +1,35 @@
+node {
+    def imageName = "ajju13/pyserverinfo-service"
+    def dockerTag = "${env.BUILD_NUMBER}"
+    def gitRepo = "https://github.com/AjayKumarPatnaikuni/pyserverinfo-service.git"
+    
+    stage("checkout code"){
+        git branch: 'main', credentialsId: 'github-creds', url: 'https://github.com/AjayKumarPatnaikuni/pyserverinfo-service.git'
+    }
+    stage("trivy fs scan"){
+        sh 'trivy fs .'
+    }
+    stage("build docker image"){
+        sh 'docker build . -t ${imageName}:${dockerTag}'
+    }
+    stage("trivy image scan"){
+        sh 'trivy image ${imageName}:${dockerTag}'
+    }
+    stage("push to dockerhub"){
+        withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', passwordVariable: 'DOCK_PASSWORD', usernameVariable: 'DOCK_USER')]) {
+        sh 'docker login -u ${DOCK_USER} -p ${DOCK_PASSWORD}'
+        sh 'docker push ${imageName}:${dockerTag}'
+       }
+    }
+    stage("update and push deployment.yml to github"){
+        withCredentials([usernamePassword(credentialsId: 'github-creds', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USER')]) {
+        sh '''sed -i \'s|image: ${imageName}:.*|image: ${imageName}:${dockerTag}|\' deployment.yml
+              echo "Updated deployment.yml with image ${imageName}:${dockerTag}"
+              git config user.email "ajaykumarpatnaikuni@gmail.com"
+              git config user.name "AjayKumarPatnaikuni"
+              git add deployment.yml
+              git commit -m "Updated image tag to ${dockerTag} via Jenkins"
+              git push https://${GIT_USER}:${GIT_PASS}@github.com/AjayKumarPatnaikuni/pyserverinfo-service.git HEAD:main'''
+       }
+    }
+}
