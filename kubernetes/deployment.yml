@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pyserverinfo
+  labels:
+    app: webapp
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: webapp
+  template:
+    metadata:
+      labels:        # ✅ Corrected here
+        app: webapp
+    spec:
+      containers:
+        - name: webapp
+          image: ajju13/pyserverinfo:28
+          ports:
+            - containerPort: 3000
