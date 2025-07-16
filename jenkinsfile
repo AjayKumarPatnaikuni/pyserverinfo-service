@@ -21,7 +21,7 @@ node {
     }
     stage("update and push deployment.yml to github"){
         withCredentials([usernamePassword(credentialsId: 'github-creds', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USER')]) {
-        sh '''sed -i "s|image: ajju13/pyserverinfo:[^ ]*|image: ajju13/pyserverinfo:${BUILD_NUMBER}|" deployment.yml
+        sh '''sed -i "s|image: ajju13/pyserverinfo:[^ ]*|image: ajju13/pyserverinfo:${BUILD_NUMBER}|" ./kubernetes/deployment.yml
               echo "Updated deployment.yml with image ${imageName}:${BUILD_NUMBER}"
               git config user.email "ajaykumarpatnaikuni@gmail.com"
               git config user.name "AjayKumarPatnaikuni"
