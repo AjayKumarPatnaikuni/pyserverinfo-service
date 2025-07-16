@@ -25,7 +25,7 @@ node {
               echo "Updated deployment.yml with image ${imageName}:${BUILD_NUMBER}"
               git config user.email "ajaykumarpatnaikuni@gmail.com"
               git config user.name "AjayKumarPatnaikuni"
-              git add deployment.yml
+              git add ./kubernetes/deployment.yml
               git commit -m "Updated image tag to ${dockerTag} via Jenkins"
               git push https://${GIT_USER}:${GIT_PASSWORD}@github.com/AjayKumarPatnaikuni/pyserverinfo-service.git HEAD:main'''
        }
