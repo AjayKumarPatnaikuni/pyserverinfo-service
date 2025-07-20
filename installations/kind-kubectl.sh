@@ -14,13 +14,11 @@ echo "kind installation complete."
 #kubectl installation
 # Variables
 VERSION="v1.30.0"
-URL="https://dl.k8s.io/release/${VERSION}/bin/linux/amd64/kubectl"
-INSTALL_DIR="/usr/local/bin"
 
 # Download and install kubectl
-curl -LO "$URL"
+curl -LO "https://dl.k8s.io/release/${VERSION}/bin/linux/amd64/kubectl"
 chmod +x kubectl
-sudo mv kubectl $INSTALL_DIR/
+sudo mv kubectl /usr/local/bin/
 kubectl version --client
 
 # Clean up
