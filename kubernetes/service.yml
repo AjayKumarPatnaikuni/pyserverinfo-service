@@ -3,10 +3,10 @@ kind: Service
 metadata:
   name: pyserverinfo-svc
 spec:
-  type: LoadBalancer
+  type: NodePort
   ports:
     - port: 80
       targetPort: 3000
-      #nodePort: 30231
+      nodePort: 30231
   selector:
       app: webapp
