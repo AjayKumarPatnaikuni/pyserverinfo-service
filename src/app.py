@@ -10,17 +10,14 @@ def fetchDetails():
 
 @app.route("/")
 def hello_world():
-    return "<p>Deployment of a simple Python Flask Web Application using Jenkins & Argocd in Kind Cluster, monitored by Grafana</p>"
+    hostname, ip = fetchDetails()
+    return render_template('server.html', HOSTNAME=hostname, IP=ip)
 
 @app.route("/health")
 def health():
     return jsonify(
         status="up"
     )
-@app.route("/server")
-def server():
-    hostname, ip = fetchDetails()
-    return render_template('server.html', HOSTNAME=hostname, IP=ip)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=3000)
