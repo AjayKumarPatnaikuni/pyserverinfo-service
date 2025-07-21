@@ -107,3 +107,16 @@ Ref: https://kind.sigs.k8s.io/docs/user/configuration/
   kubectl get secret -n argocd argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d && echo
   ```
   Note: Default user is “**admin**”
+### Configuration of Application in Argocd
+- Navigate to Argocd dashboard, click on applications, and then click on new app.
+- Provide application details as follows:
+  **Application name**: pyserverinfo service # replace with your application name
+  **Project name**: default
+  **Sync policy**: automatic
+  **Repository URL**: https://github.com/AjayKumarPatnaikuni/pyserverinfo-service.git  #replace with your github URL
+  **Revision**: main #mention your branch name
+  **Path**: kubernetes/  # replace with your kubernetes manifest path in github url
+  **ClusterURL**: https://kubernetes.default.svc
+  **Namespace**: default
+ Click on create.
+
