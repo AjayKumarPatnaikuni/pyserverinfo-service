@@ -110,6 +110,7 @@ Ref: https://kind.sigs.k8s.io/docs/user/configuration/
 ### Configuration of Application in Argocd
 - Navigate to Argocd dashboard, click on applications, and then click on new app.
 - Provide application details as follows:
+
   **Application name**: pyserverinfo service # replace with your application name
   **Project name**: default
   **Sync policy**: automatic
