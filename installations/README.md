@@ -174,4 +174,4 @@ access the grafana in browser by "public i.p of instance:8089" and username will
   ```
   kubectl get secret --namespace monitoring grafana -o jsonpath="{.data.admin-password}" | base64 --decode ; echo
   ```
-  **Note**: Default grafana username is "**admin**"
+**Note**: Default grafana username is "**admin**"
