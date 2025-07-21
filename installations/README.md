@@ -1,5 +1,7 @@
-# Installation & Configuration
-### Installation of Jenkins, Docker, Ansible, Trivy
+# Phase-1:
+## Installation & Configuration of Jenkins, Docker, Kind, Kubectl, Helm, Agocd
+
+### Installation of Jenkins, Docker, Trivy
 
 - Create a file with name "**jenkins.sh**" and copy the code from "**jenkins.sh**", save and exit.
 - Provide the executable permissions to "**jenkins.sh**"
@@ -107,6 +109,7 @@ Ref: https://kind.sigs.k8s.io/docs/user/configuration/
   kubectl get secret -n argocd argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d && echo
   ```
   Note: Default user is “**admin**”
+
 ### Configuration of Application in Argocd
 - Navigate to Argocd dashboard, click on **Applications**, and then click on **new app**.
 - Provide application details as follows:
@@ -120,3 +123,55 @@ Ref: https://kind.sigs.k8s.io/docs/user/configuration/
   - **Namespace**: default
  Click on create.
 
+# Phase-2
+##  Monitoring Jenkins, ArgoCD with Prometheus
+
+### Installation of Prometheus and Grafana with helm
+- Create namespace monitoring.
+  ```
+  kubectl create namespace monitoring
+  ```
+- Add, Update, and istall the prometheus  via helm chart.
+  ```
+  helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+  helm repo update
+  helm install prometheus prometheus-community/prometheus -n monitoring
+  ```
+- Verify the **prometheus services** in monitoring namespace.
+  ```
+  kubectl get svc -n monitoring
+  ```
+- Now expose the Prometheus-server service from clusterIP to Nodeport. Find the "**ClusterIp**" in "**prometheus-server**" service and replace it with "**NodePort**".
+  ```
+  kubetctl edit svc/prometheus-server -n monitoring
+  ```
+- Now expose and forward the prometheus-server service port to 9090 to access it on browser.
+  ```
+  kubectl port-forward svc/prometheus-server -n monitoring 9090:80 --address=0.0.0.0 &
+  ```
+  access the prometheus server in browser by <public i.p of instance>:9090
+
+- Add, Update, and istall the Grafana via helm chart.
+  ```
+  helm repo add grafana https://grafana.github.io/helm-charts
+  helm repo update
+  helm install grafana grafana/grafana --namespace monitoring
+  ```
+- Verify the grafana service
+  ```
+  kubectl get svc -n monitoring
+  ```
+- Now expose the grafana service from clusterIP to Nodeport. Find the "**ClusterIp**" in "**grafana**" service and replace it with "**NodePort**".
+  ```
+  kubectl edit svc grafana -n monitoring
+  ```
+- Now expose and forward the grafana service port to 8089 to access it on browser.
+  ```
+  kubectl port-forward svc/grafana 8089:80 -n monitoring --address=0.0.0.0 &
+  ```
+access the grafana in browser by <public i.p of instance>:8089 and username will be "**admin**".
+- To get the grafana password execute below command, copy and save it.
+  ```
+  kubectl get secret --namespace monitoring grafana -o jsonpath="{.data.admin-password}" | base64 --decode ; echo
+  ```
+  **Note**: Default grafana username is "**admin**"
