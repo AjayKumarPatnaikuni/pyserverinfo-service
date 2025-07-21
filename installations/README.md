@@ -1,8 +1,8 @@
 # Installation & Configuration
 ### Installation of Jenkins, Docker, Ansible, Trivy
 
-- Create a file with name "jenkins.sh" and copy the code from "jenkins.sh", save and exit.
-- Provide the executable permissions to "jenkins.sh"
+- Create a file with name "**jenkins.sh**" and copy the code from "**jenkins.sh**", save and exit.
+- Provide the executable permissions to "**jenkins.sh**"
   ```
   sudo chmod +x jenkins.sh
   ./jenkins.sh
@@ -50,9 +50,60 @@
   ```
   ref: https://helm.sh/docs/intro/install/
 
-  Note: If you want to install as a script create a file with name "kind-kubectl.sh" and copy from "kind-kubectl.sh", save and exit.
+  **Note**: If you want to install as a script create a file with name "**kind-kubectl.sh**" and copy from "**kind-kubectl.sh**", save and exit.
   provide the executable peramissions and run the script
   ```
   sudo chmod +x kind-kubectl.sh
   ./kind-kubectl.sh
   ```
+
+### Provisioning kubernetes cluster with kind
+- Create a configuration file **config.yml** to create multimode cluster and paste the below configuration.
+  ```
+  kind: Cluster
+  apiVersion: kind.x-k8s.io/v1alpha4
+  nodes:
+  - role: control-plane
+    image: kindest/node:v1.30.0
+  - role: worker
+    image: kindest/node:v1.30.0
+  - role: worker
+    image: kindest/node:v1.30.0
+  ```
+- Create cluster with name “webapp” by executing below command.
+  ```
+  sudo kind create cluster --name webapp --config=config.yml
+  ```
+- Now verify the cluster information
+  ```
+  kubectl cluster-info --context kind-webapp
+  kubectl get nodes
+  ```
+Ref: https://kind.sigs.k8s.io/docs/user/configuration/
+
+### Installation of ArgoCD with Helm
+- Create a new **namespace** with name “**argocd**” in cluster.
+  ```
+  kubectl create namespace argocd
+  ```
+- Deploy the ArgoCD application using manifest files.
+  ```
+  kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+  ```
+- Now verify the services created in argocd namespace.
+  ```
+  kubectl get svc -n argocd
+  ```
+- Now expose the argocd-server from clusterIP to Nodeport by editing the argocd-server service. Find service type "**clusterIP**" and replace it with "**NodePort**".
+  ```
+  kubectl edit svc argocd-server -n argocd
+  ```
+- To access argocd server, we need to do port forwarding.
+  ```
+  kubectl port-forward -n argocd service/argocd-server 8090:443 --address=0.0.0.0 &
+  ```
+- Access the argocd server from browser, username is "**admin**, and get password by execute below command.
+  ```
+  kubectl get secret -n argocd argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d && echo
+  ```
+  Note: Default user is “**admin**”
