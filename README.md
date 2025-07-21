@@ -7,10 +7,14 @@ This is Implementation of an automated CI/CD pipeline for deploying containerize
 
 
 The objective of this project is to automate the build and deployment pipeline with integrated monitoring using the following tools and services:
-- GitHub: Store and manage source code repositories and trigger CI on commits.
-- Jenkins: Build application code, run tests, build Docker images, and push to container registry.
-- Docker: Package applications into containers for consistent deployment.
-- ArgoCD: Automate Kubernetes deployment using GitOps principles.
-- Kubernetes: Orchestrate containerized applications in a scalable environment.
-- Prometheus: Collect metrics from Kubernetes workloads and nodes.
-- Grafana: Create dashboards for observability and real-time monitoring of application and infrastructure.
+- **GitHub**: Store and manage source code repositories and trigger CI on commits.
+- **Jenkins**: Build application code, run tests, build Docker images, and push to container registry.
+- **Docker**: Package applications into containers for consistent deployment.
+- **ArgoCD**: Automate Kubernetes deployment using GitOps principles.
+- **Kubernetes**: Orchestrate containerized applications in a scalable environment.
+- **Prometheus**: Collect metrics from Kubernetes workloads and nodes.
+- **Grafana**: Create dashboards for observability and real-time monitoring of application and infrastructure.
+
+## Installations & Configurations
+For installations and configurations refer 
+ https://github.com/AjayKumarPatnaikuni/pyserverinfo-service/tree/main/installations
