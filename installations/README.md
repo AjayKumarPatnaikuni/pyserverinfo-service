@@ -111,9 +111,9 @@ Ref: https://kind.sigs.k8s.io/docs/user/configuration/
   Note: Default user is “**admin**”
 
 ### Configuration of Application in Argocd
-- Navigate to Argocd dashboard, click on **Applications**, and then click on **new app**.
+- Navigate to Argocd dashboard, click on **Applications**, and then click on **NEW APP**.
 - Provide application details as follows:
-  - **Application name**: pyserverinfo service   **# replace with your application name**
+  - **Application name**: pyserverinfoservice   **# replace with your application name**
   - **Project name**: default
   - **Sync policy**: automatic
   - **Repository URL**: https://github.com/AjayKumarPatnaikuni/pyserverinfo-service.git    **#replace with your github URL**
@@ -143,13 +143,13 @@ Ref: https://kind.sigs.k8s.io/docs/user/configuration/
   ```
 - Now expose the Prometheus-server service from clusterIP to Nodeport. Find the "**ClusterIp**" in "**prometheus-server**" service and replace it with "**NodePort**".
   ```
-  kubetctl edit svc/prometheus-server -n monitoring
+  kubectl edit svc/prometheus-server -n monitoring
   ```
 - Now expose and forward the prometheus-server service port to 9090 to access it on browser.
   ```
   kubectl port-forward svc/prometheus-server -n monitoring 9090:80 --address=0.0.0.0 &
   ```
-  access the prometheus server in browser by <public i.p of instance>:9090
+  access the prometheus server in browser by "public i.p of instance:9090"
 
 - Add, Update, and istall the Grafana via helm chart.
   ```
@@ -169,7 +169,7 @@ Ref: https://kind.sigs.k8s.io/docs/user/configuration/
   ```
   kubectl port-forward svc/grafana 8089:80 -n monitoring --address=0.0.0.0 &
   ```
-access the grafana in browser by <public i.p of instance>:8089 and username will be "**admin**".
+access the grafana in browser by "public i.p of instance:8089" and username will be "**admin**".
 - To get the grafana password execute below command, copy and save it.
   ```
   kubectl get secret --namespace monitoring grafana -o jsonpath="{.data.admin-password}" | base64 --decode ; echo
