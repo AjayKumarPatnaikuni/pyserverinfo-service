@@ -248,3 +248,5 @@ access the grafana in browser by "public i.p of instance:8089" and username will
 - Go to GrafanaUI --> Dashboards --> select **import** option from the drop down list on **new**.
 - Enter “**14584**” as id and click on **load**, and then click on **import**.
 - Go to dashboards, click on argocd dashboard and verify the argocd metrics such as cluster, application etc.
+
+**Note**: If there any issue with **prometheus-server** after restarting, kindly check the indentations in **prometheus-server configmap** and modify accordingly.
