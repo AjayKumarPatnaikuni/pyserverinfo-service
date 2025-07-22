@@ -124,14 +124,14 @@ Ref: https://kind.sigs.k8s.io/docs/user/configuration/
  Click on create.
 
 # Phase-2
-##  Monitoring Jenkins, ArgoCD with Prometheus
+##  Monitor Jenkins, ArgoCD with Prometheus and Grafana
 
 ### Installation of Prometheus and Grafana with helm
-- Create namespace monitoring.
+- Create namespace **monitoring**.
   ```
   kubectl create namespace monitoring
   ```
-- Add, Update, and istall the prometheus  via helm chart.
+- Add, Update, and istall the **prometheus** via helm chart.
   ```
   helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
   helm repo update
@@ -145,19 +145,19 @@ Ref: https://kind.sigs.k8s.io/docs/user/configuration/
   ```
   kubectl edit svc/prometheus-server -n monitoring
   ```
-- Now expose and forward the prometheus-server service port to 9090 to access it on browser.
+- Now expose and forward the **prometheus-server** service port to 9090 to access it on browser.
   ```
   kubectl port-forward svc/prometheus-server -n monitoring 9090:80 --address=0.0.0.0 &
   ```
   access the prometheus server in browser by "public i.p of instance:9090"
 
-- Add, Update, and istall the Grafana via helm chart.
+- Add, Update, and install the **Grafana** via helm chart.
   ```
   helm repo add grafana https://grafana.github.io/helm-charts
   helm repo update
   helm install grafana grafana/grafana --namespace monitoring
   ```
-- Verify the grafana service
+- Verify the **grafana** service
   ```
   kubectl get svc -n monitoring
   ```
@@ -165,7 +165,7 @@ Ref: https://kind.sigs.k8s.io/docs/user/configuration/
   ```
   kubectl edit svc grafana -n monitoring
   ```
-- Now expose and forward the grafana service port to 8089 to access it on browser.
+- Now expose and forward the **grafana** service port to 8089 to access it on browser.
   ```
   kubectl port-forward svc/grafana 8089:80 -n monitoring --address=0.0.0.0 &
   ```
@@ -175,3 +175,9 @@ access the grafana in browser by "public i.p of instance:8089" and username will
   kubectl get secret --namespace monitoring grafana -o jsonpath="{.data.admin-password}" | base64 --decode ; echo
   ```
 **Note**: Default grafana username is "**admin**"
+
+### Add Prometheus as Datasource in Grafana
+- Go to grafana UI --> Datasource --> Add Datasource --> select "prometheus"
+- Under "**connection**" section provide **prometheus url**, click on save & test.
+
+
