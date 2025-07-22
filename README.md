@@ -1,5 +1,5 @@
 # Build and Deploy with Github, Jenkins, Argocd, Kubernetes
-This is Server information micro service using Python Flask Framework which displays "**server name**" and "**ip**".
+This is Server information micro service developed using Python and Flask Framework which displays "**server name**" and "**ip**".
 This is Implementation of an automated CI/CD pipeline for deploying containerized applications using "**GitHub, Jenkins, Docker, ArgoCD, Kubernetes**" and monitor with "**Prometheus, and Grafana**".
 
 ## Architecture

@@ -83,7 +83,7 @@
   ```
 Ref: https://kind.sigs.k8s.io/docs/user/configuration/
 
-### Installation of ArgoCD with Helm
+### Installation of ArgoCD
 - Create a new **namespace** with name “**argocd**” in cluster.
   ```
   kubectl create namespace argocd
