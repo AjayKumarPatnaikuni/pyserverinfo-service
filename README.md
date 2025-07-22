@@ -10,7 +10,7 @@ The objective of this project is to automate the build and deployment pipeline w
 - **GitHub**: Store and manage source code repositories and trigger CI on commits.
 - **Jenkins**: Build application code, run tests, build Docker images, and push to container registry.
 - **Docker**: Package applications into containers for consistent deployment.
-**Trivy**: Scan Docker images and Infrastructure-as-Code (IaC) configurations for vulnerabilities and misconfigurations.
+- **Trivy**: Scan Docker images and Infrastructure-as-Code (IaC) configurations for vulnerabilities and misconfigurations.
 - **ArgoCD**: Automate Kubernetes deployment using GitOps principles.
 - **Kubernetes**: Orchestrate containerized applications in a scalable environment.
 - **Prometheus**: Collect metrics from Kubernetes workloads and nodes.
