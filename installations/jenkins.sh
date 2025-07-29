@@ -1,6 +1,6 @@
 #!/bin/bash
 sudo apt-get update -y
-sudo apt-get install -y wget git docker.io
+sudo apt-get install -y wget git
 sudo apt-get install -y openjdk-21-jdk
 
 # Set JAVA_HOME environment variable
@@ -16,11 +16,13 @@ sudo apt-get update -y
 sudo apt-get install -y jenkins
 sudo systemctl start jenkins
 sudo systemctl enable jenkins
+sudo apt-get install -y docker.io
 sudo systemctl start docker
 sudo systemctl enable docker
 sudo usermod -aG docker jenkins
 sudo usermod -aG docker $USER
 sudo systemctl restart docker
+sudo systemctl restart jenkins
 sudo apt-get install -y gnupg
 wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | gpg --dearmor | sudo tee /usr/share/keyrings/trivy.gpg > /dev/null
 echo "deb [signed-by=/usr/share/keyrings/trivy.gpg] https://aquasecurity.github.io/trivy-repo/deb generic main" | sudo tee -a /etc/apt/sources.list.d/trivy.list
