@@ -1,7 +1,8 @@
 #!/bin/bash
 sudo apt-get update -y
 sudo apt-get install -y wget git docker.io
-sudo usermod -aG docker $USER && sudo newgrp docker
+sudo usermod -aG docker $USER 
+sudo systemctl restart docker
 
 #kind installation
 # For AMD64 / x86_64

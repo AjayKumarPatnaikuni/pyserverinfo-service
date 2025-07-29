@@ -19,6 +19,8 @@ sudo systemctl enable jenkins
 sudo systemctl start docker
 sudo systemctl enable docker
 sudo usermod -aG docker jenkins
+sudo usermod -aG docker $USER
+sudo systemctl restart docker
 sudo apt-get install -y gnupg
 wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | gpg --dearmor | sudo tee /usr/share/keyrings/trivy.gpg > /dev/null
 echo "deb [signed-by=/usr/share/keyrings/trivy.gpg] https://aquasecurity.github.io/trivy-repo/deb generic main" | sudo tee -a /etc/apt/sources.list.d/trivy.list
