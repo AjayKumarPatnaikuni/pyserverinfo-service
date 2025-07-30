@@ -215,6 +215,7 @@ Ref: https://hub.docker.com/r/grafana/grafana
 - Enter “**9964**” as id and click on **load**.
 - Select "**prometheus**" as datasource and click on **import**.
 - Now Go to dashboards, click on jenins dashboard and verify the jenkins metrics such as jobs, executors, etc. from dashboard panels.
+
 **Argocd**
 -  Go to GrafanaUI --> Dashboards --> select **import** option from the drop down list on **new**.
 - Enter “**14584**” as id and click on **load**, and then click on **import**.
