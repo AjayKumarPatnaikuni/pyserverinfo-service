@@ -121,6 +121,7 @@ Ref: https://kind.sigs.k8s.io/docs/user/configuration/
   docker run --name prometheus -d -p 127.0.0.1:9090:9090 prom/prometheus
   ```
 - Access the prometheus in browser by **serverip:9090**. #replace **serverip** with your ip.
+
 Ref: https://hub.docker.com/r/prom/prometheus
 - Create grafana container.
   ```
