@@ -42,6 +42,15 @@ Ref: https://kind.sigs.k8s.io/docs/user/quick-start/#installation
   kubectl version --client
   ```
 Ref: https://kubernetes.io/docs/tasks/tools/
+### Installation of Helm
+- Install the helm by executing below commands
+  ```
+  curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
+  sudo chmod 700 get_helm.sh
+  sudo ./get_helm.sh
+  ```
+Ref: https://helm.sh/docs/intro/install/
+
 
   **Note**: If you want to install as a script create a file with name "**kind-kubectl.sh**" and copy from "**kind-kubectl.sh**", save and exit.
   provide the executable peramissions and run the script
@@ -116,13 +125,32 @@ Ref: https://kind.sigs.k8s.io/docs/user/configuration/
 
 # Phase-2
 ##  Monitor Jenkins, ArgoCD with Prometheus and Grafana
-- Create prometheus container.
+### Deployment of Prometheus via helm
+- Create namespace **monitoring**.
   ```
-  docker run --name prometheus -d -p 127.0.0.1:9090:9090 prom/prometheus
+  kubectl create namespace monitoring
   ```
-- Access the prometheus in browser by **serverip:9090**. #replace **serverip** with your ip.
+- Add, Update, and istall the **prometheus** via helm chart.
+  ```
+  helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+  helm repo update
+  helm install prometheus prometheus-community/prometheus -n monitoring
+  ```
+- Verify the **prometheus services** in monitoring namespace.
+  ```
+  kubectl get svc -n monitoring
+  ```
+- Now expose the Prometheus-server service from clusterIP to Nodeport. Find the "**ClusterIp**" in "**prometheus-server**" service and replace it with "**NodePort**".
+  ```
+  kubectl edit svc/prometheus-server -n monitoring
+  ```
+- Now expose and forward the **prometheus-server** service port to 9090 to access it on browser.
+  ```
+  kubectl port-forward svc/prometheus-server -n monitoring 9090:80 --address=0.0.0.0 &
+  ```
+  access the prometheus server in browser by "public i.p of instance:9090"
 
-Ref: https://hub.docker.com/r/prom/prometheus
+### Provisioning Grafana
 - Create grafana container.
   ```
   docker run -d --name=grafana -p 3000:3000 grafana/grafana
@@ -136,7 +164,7 @@ Ref: https://hub.docker.com/r/grafana/grafana
 - Go to grafana UI --> Datasource --> Add Datasource --> select "prometheus"
 - Under "**connection**" section provide **prometheus url**, click on **save & test**.
 
-### Configuration & Visualization  of Jenkins metrics  in Prometheus & Grafana
+### Configuration of Jenkins, argocd metrics  in Prometheus
 - Navigate to Jenkins UI --> Manage Jenkins --> plugins
 - Search for **Prometheus metrics plugin**, install and then restart the jenkins. 
 - Go to Jenkins UI --> Manage Jenkins --> System --> Prometheus, and make sure that below configurations existed.
@@ -145,3 +173,44 @@ Ref: https://hub.docker.com/r/grafana/grafana
     - Collecting metrics period: “120” # I changed this metrics to 10 for testing.
   Click on apply and save.
 - Validate the Jenkins metrics end point, by browsing the “Jenkins ip:8080/Prometheus”.
+- Verify the Prometheus-server configmap add the Jenkins server as target in scrape_configs section.
+  ```
+  kubectl get cm -n monitoring
+  ```
+- Add the below configuration for  Jenkins server as target under scrape_configs section.
+  ```
+  - job_name: 'argocd'
+    static_configs:
+      - targets:
+          - 'argocd-metrics.argocd.svc.cluster.local:8082'                 
+          - 'argocd-repo-server.argocd.svc.cluster.local:8084'                  
+          - 'argocd-server-metrics.argocd.svc.cluster.local:8083'              
+          - 'argocd-notifications-controller-metrics.argocd.svc.cluster.local:9001'
+		  
+  - job_name: 'jenkins'
+    metrics_path: '/prometheus/'
+    static_configs:
+      - targets: ['15.206.153.19:8080']  #Replace with your jenkins server url
+  ```
+ Identify the Prometheus server pod name and delete it and wait for it to restart.
+  ```
+  kubectl get pods –n monitoring
+  kubectl delete pod prometheus-server-646498f746-2vgq5 -n monitoring  #replace it with your pod name
+  ```
+- Once pod restarts,  port forward and expose port 9090 to access it on browser.
+  ```
+  kubectl port-forward svc/prometheus-server -n monitoring 9090:80 --address=0.0.0.0 &
+  ```
+- Verify  jenkins, argocd endpoints were added to the prometheus targets by browsing "Prometheus server ip:9090/targets"
+- Now validate jenkins, argocd endpoints to the targets, by **prometheusserverip:9090/tagets**. # Replace with your prometheus server ip.
+
+### Visualization  of Jenkins, argocd metrics  in Grafana
+- Go to GrafanaUI --> Dashboards --> select **import** option from the drop down list on **new**.
+- Enter “**9964**” as id and click on **load**.
+- Select "**prometheus**" as datasource and click on **import**.
+- Now Go to dashboards, click on jenins dashboard and verify the jenkins metrics such as jobs, executors, etc. from dashboard panels.
+-  Go to GrafanaUI --> Dashboards --> select **import** option from the drop down list on **new**.
+- Enter “**14584**” as id and click on **load**, and then click on **import**.
+- Go to dashboards, click on argocd dashboard and verify the argocd metrics such as cluster, application etc.
+
+**Note**: If there any issue with **prometheus-server** after restarting, kindly check the indentations in **prometheus-server configmap** and modify accordingly.

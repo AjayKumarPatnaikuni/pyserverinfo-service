@@ -23,3 +23,8 @@ kubectl version --client
 rm -f kubectl
 
 echo "kubectl installation complete."
+# Helm installation
+# Download and install Helm
+curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
+sudo chmod 700 get_helm.sh
+sudo ./get_helm.sh
