@@ -129,6 +129,7 @@ Ref: https://hub.docker.com/r/prom/prometheus
   ```
 - Access the grafana in browser by **serverip:3000**. #replace **serverip** with your ip.
 - Default login credentials to access grafana are **admin/admin**. Once loggedin reset the password.
+
 Ref: https://hub.docker.com/r/grafana/grafana
 
 ### Add Prometheus as Datasource in Grafana
