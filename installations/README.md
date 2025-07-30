@@ -122,6 +122,11 @@ Ref: https://kind.sigs.k8s.io/docs/user/configuration/
   - **ClusterURL**: https://kubernetes.default.svc
   - **Namespace**: default
  Click on create.
+- Now verify the objects created by argocd, and expose pyserverinfo-svc to access in browser.
+  ```
+  kubectl get svc
+  kubectl port-forward svc/pyserverinfo-svc 30231:30231 --address=0.0.0.0 &
+  ```
 
 # Phase-2
 ##  Monitor Jenkins, ArgoCD with Prometheus and Grafana
