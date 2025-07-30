@@ -91,7 +91,7 @@ Ref: https://kind.sigs.k8s.io/docs/user/configuration/
   ```
   kubectl edit svc argocd-server -n argocd
   ```
-- To access argocd server, we need to do port forwarding.
+- To access argocd server, we need to expose its port.
   ```
   kubectl port-forward -n argocd service/argocd-server 8090:443 --address=0.0.0.0 &
   ```
@@ -116,7 +116,20 @@ Ref: https://kind.sigs.k8s.io/docs/user/configuration/
 
 # Phase-2
 ##  Monitor Jenkins, ArgoCD with Prometheus and Grafana
-**Working on monitoring phase**
+- Create prometheus container.
+  ```
+  docker run --name prometheus -d -p 127.0.0.1:9090:9090 prom/prometheus
+  ```
+- Access the prometheus in browser by **serverip:9090**. #replace **serverip** with your ip.
+ref: https://hub.docker.com/r/prom/prometheus
+- Create grafana container.
+  ```
+  docker run -d --name=grafana -p 3000:3000 grafana/grafana
+  ```
+- Access the grafana in browser by **serverip:3000**. #replace **serverip** with your ip.
+- Default login credentials to access grafana are **admin/admin**. Once loggedin reset the password.
+ref: https://hub.docker.com/r/grafana/grafana
+
 ### Add Prometheus as Datasource in Grafana
 - Go to grafana UI --> Datasource --> Add Datasource --> select "prometheus"
 - Under "**connection**" section provide **prometheus url**, click on **save & test**.
