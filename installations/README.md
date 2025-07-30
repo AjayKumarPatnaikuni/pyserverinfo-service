@@ -155,7 +155,7 @@ Ref: https://kind.sigs.k8s.io/docs/user/configuration/
   ```
   access the prometheus server in browser by "public i.p of instance:9090"
 
-### Deployment of Grafana using Docker
+### Deployment of Grafana via Docker
 - Create grafana container.
   ```
   docker run -d --name=grafana -p 3000:3000 grafana/grafana
