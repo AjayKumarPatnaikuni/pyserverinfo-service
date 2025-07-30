@@ -197,7 +197,7 @@ Ref: https://hub.docker.com/r/grafana/grafana
     static_configs:
       - targets: ['15.206.153.19:8080']  #Replace with your jenkins server url
   ```
- Identify the Prometheus server pod name and delete it and wait for it to restart.
+- Identify the Prometheus server pod name and delete it and wait for it to restart.
   ```
   kubectl get pods –n monitoring
   kubectl delete pod prometheus-server-646498f746-2vgq5 -n monitoring  #replace it with your pod name
