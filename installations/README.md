@@ -43,15 +43,6 @@
   ```
   ref: https://kubernetes.io/docs/tasks/tools/
 
-### Installation of Helm
-- Install the helm by executing below commands
-  ```
-  curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
-  sudo chmod 700 get_helm.sh
-  sudo ./get_helm.sh
-  ```
-  ref: https://helm.sh/docs/intro/install/
-
   **Note**: If you want to install as a script create a file with name "**kind-kubectl.sh**" and copy from "**kind-kubectl.sh**", save and exit.
   provide the executable peramissions and run the script
   ```
@@ -60,17 +51,17 @@
   ```
 
 ### Provisioning kubernetes cluster with kind
-- Create a configuration file **config.yml** to create multimode cluster and paste the below configuration.
+- Create a configuration file **config.yml** to create multi-node cluster and paste the below configuration.
   ```
   kind: Cluster
   apiVersion: kind.x-k8s.io/v1alpha4
   nodes:
   - role: control-plane
-    image: kindest/node:v1.30.0
+    image: kindest/node:v1.30.0 # Ensure this matches the kubectl version
   - role: worker
-    image: kindest/node:v1.30.0
+    image: kindest/node:v1.30.0 # Ensure this matches the kubectl version
   - role: worker
-    image: kindest/node:v1.30.0
+    image: kindest/node:v1.30.0 # Ensure this matches the kubectl version
   ```
 - Create cluster with name “webapp” by executing below command.
   ```
@@ -125,57 +116,7 @@ Ref: https://kind.sigs.k8s.io/docs/user/configuration/
 
 # Phase-2
 ##  Monitor Jenkins, ArgoCD with Prometheus and Grafana
-
-### Installation of Prometheus and Grafana with helm
-- Create namespace **monitoring**.
-  ```
-  kubectl create namespace monitoring
-  ```
-- Add, Update, and istall the **prometheus** via helm chart.
-  ```
-  helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
-  helm repo update
-  helm install prometheus prometheus-community/prometheus -n monitoring
-  ```
-- Verify the **prometheus services** in monitoring namespace.
-  ```
-  kubectl get svc -n monitoring
-  ```
-- Now expose the Prometheus-server service from clusterIP to Nodeport. Find the "**ClusterIp**" in "**prometheus-server**" service and replace it with "**NodePort**".
-  ```
-  kubectl edit svc/prometheus-server -n monitoring
-  ```
-- Now expose and forward the **prometheus-server** service port to 9090 to access it on browser.
-  ```
-  kubectl port-forward svc/prometheus-server -n monitoring 9090:80 --address=0.0.0.0 &
-  ```
-  access the prometheus server in browser by "public i.p of instance:9090"
-
-- Add, Update, and install the **Grafana** via helm chart.
-  ```
-  helm repo add grafana https://grafana.github.io/helm-charts
-  helm repo update
-  helm install grafana grafana/grafana --namespace monitoring
-  ```
-- Verify the **grafana** service
-  ```
-  kubectl get svc -n monitoring
-  ```
-- Now expose the grafana service from clusterIP to Nodeport. Find the "**ClusterIp**" in "**grafana**" service and replace it with "**NodePort**".
-  ```
-  kubectl edit svc grafana -n monitoring
-  ```
-- Now expose and forward the **grafana** service port to 8089 to access it on browser.
-  ```
-  kubectl port-forward svc/grafana 8089:80 -n monitoring --address=0.0.0.0 &
-  ```
-access the grafana in browser by "public i.p of instance:8089" and username will be "**admin**".
-- To get the grafana password execute below command, copy and save it.
-  ```
-  kubectl get secret --namespace monitoring grafana -o jsonpath="{.data.admin-password}" | base64 --decode ; echo
-  ```
-**Note**: Default grafana username is "**admin**"
-
+**Working on monitoring phase**
 ### Add Prometheus as Datasource in Grafana
 - Go to grafana UI --> Datasource --> Add Datasource --> select "prometheus"
 - Under "**connection**" section provide **prometheus url**, click on **save & test**.
