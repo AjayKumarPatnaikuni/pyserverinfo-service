@@ -30,7 +30,7 @@
   ```
   kind --version
   ```
-  ref: https://kind.sigs.k8s.io/docs/user/quick-start/#installation
+Ref: https://kind.sigs.k8s.io/docs/user/quick-start/#installation
 ### Installation of kubectl
 - Install the kubectl by executing below commands
   ```
@@ -41,7 +41,7 @@
   sudo mv kubectl /usr/local/bin/
   kubectl version --client
   ```
-  ref: https://kubernetes.io/docs/tasks/tools/
+Ref: https://kubernetes.io/docs/tasks/tools/
 
   **Note**: If you want to install as a script create a file with name "**kind-kubectl.sh**" and copy from "**kind-kubectl.sh**", save and exit.
   provide the executable peramissions and run the script
@@ -121,14 +121,14 @@ Ref: https://kind.sigs.k8s.io/docs/user/configuration/
   docker run --name prometheus -d -p 127.0.0.1:9090:9090 prom/prometheus
   ```
 - Access the prometheus in browser by **serverip:9090**. #replace **serverip** with your ip.
-ref: https://hub.docker.com/r/prom/prometheus
+Ref: https://hub.docker.com/r/prom/prometheus
 - Create grafana container.
   ```
   docker run -d --name=grafana -p 3000:3000 grafana/grafana
   ```
 - Access the grafana in browser by **serverip:3000**. #replace **serverip** with your ip.
 - Default login credentials to access grafana are **admin/admin**. Once loggedin reset the password.
-ref: https://hub.docker.com/r/grafana/grafana
+Ref: https://hub.docker.com/r/grafana/grafana
 
 ### Add Prometheus as Datasource in Grafana
 - Go to grafana UI --> Datasource --> Add Datasource --> select "prometheus"
