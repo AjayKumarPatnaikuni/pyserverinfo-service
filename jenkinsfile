@@ -1,8 +1,21 @@
 node {
-    
+    stage("clean Work Space"){
+        cleanWs()
+    }
     stage("checkout code"){
         git branch: 'main', credentialsId: 'github-creds', url: 'https://github.com/AjayKumarPatnaikuni/pyserverinfo-service.git'
     }
+    stage('SonarQube Analysis') {
+    def scannerHome = tool 'sonar-scanner';
+    withSonarQubeEnv(credentialsId: 'sonar-token') {
+       sh """ $scannerHome/bin/sonar-scanner  \\
+            -Dsonar.projectName=pyserverinfo-service \\
+            -Dsonar.projectKey=pyserverinfo-service """
+     }
+    }
+    /*stage("wait for Quality Gate"){
+        waitForQualityGate abortPipeline: false, credentialsId: 'sonar-token'
+    }*/
     stage("trivy fs scan"){
         sh 'trivy fs .'
     }
