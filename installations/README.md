@@ -3,11 +3,11 @@
 
 ### Installation of Jenkins, Docker, Trivy
 
-- Create a file with name "**jenkins.sh**" and copy the code from "**jenkins.sh**", save and exit.
-- Provide the executable permissions to "**jenkins.sh**"
+- Create a file with name "**installations.sh**" and copy the code from "**installations.sh**", save and exit.
+- Provide the executable permissions to "**installations.sh**"
   ```
   sudo chmod +x jenkins.sh
-  ./jenkins.sh
+  ./installations.sh
   ```
 - Now verify the installed packages are running or not
   ```
