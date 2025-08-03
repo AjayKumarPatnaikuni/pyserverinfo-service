@@ -14,6 +14,7 @@
   sudo docker --version
   systemctl status docker
   systemctl status jenkins
+  docker ps -a
   ```
 ### Installation of kind
 - Install the kind by executing below commands.
