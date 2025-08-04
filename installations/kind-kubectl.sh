@@ -19,10 +19,6 @@ chmod +x kubectl
 sudo mv kubectl /usr/local/bin/
 kubectl version --client
 
-# Clean up
-rm -f kubectl
-
-echo "kubectl installation complete."
 # Helm installation
 # Download and install Helm
 curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
