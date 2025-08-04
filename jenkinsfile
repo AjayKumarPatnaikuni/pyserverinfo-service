@@ -28,9 +28,10 @@ node {
     }
     stage("push to dockerhub"){
         withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', passwordVariable: 'DOCK_PASSWORD', usernameVariable: 'DOCK_USER')]) {
-        sh 'docker login -u ${DOCK_USER} -p ${DOCK_PASSWORD}'
-        sh 'docker push ajju13/pyserverinfo-service:${BUILD_NUMBER}'
-       }
+        sh '''docker login -u ${DOCK_USER} -p ${DOCK_PASSWORD}
+            docker push ajju13/pyserverinfo-service:${BUILD_NUMBER}
+            docker rmi ajju13/pyserverinfo-service:${BUILD_NUMBER}'''
+        }
     }
     stage("update and push deployment.yml to github"){
         withCredentials([usernamePassword(credentialsId: 'github-creds', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USER')]) {
