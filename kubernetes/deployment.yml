@@ -18,6 +18,6 @@ spec:
         - name: regcred
       containers:
         - name: webapp
-          image: ajju13/pyserverinfo-service:2
+          image: ajju13/pyserverinfo-service:3
           ports:
             - containerPort: 3000
