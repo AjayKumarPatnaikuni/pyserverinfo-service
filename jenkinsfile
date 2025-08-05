@@ -13,18 +13,18 @@ node {
             -Dsonar.projectKey=pyserverinfo-service """
      }
     }
-    /*stage("wait for Quality Gate"){
+    stage("wait for Quality Gate"){
         waitForQualityGate abortPipeline: false, credentialsId: 'sonar-token'
-    }*/
+    }
     stage("trivy fs scan"){
-        sh 'trivy fs .'
+        sh 'trivy fs --format table -o pyserverinfo-service-fs-report.html .'
     }
     stage("build docker image"){
         sh 'docker build -t ajju13/pyserverinfo-service:${BUILD_NUMBER} .'
    
     }
     stage("trivy image scan"){
-        sh 'trivy image ajju13/pyserverinfo-service:${BUILD_NUMBER}'
+        sh 'trivy image --format table -o pyserverinfo-service-image-report.html ajju13/pyserverinfo-service:${BUILD_NUMBER}'
     }
     stage("push to dockerhub"){
         withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', passwordVariable: 'DOCK_PASSWORD', usernameVariable: 'DOCK_USER')]) {
