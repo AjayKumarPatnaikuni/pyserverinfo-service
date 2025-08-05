@@ -1,7 +1,5 @@
 node {
-    stage("clean Work Space"){
-        cleanWs()
-    }
+
     stage("checkout code"){
         git branch: 'main', credentialsId: 'github-creds', url: 'https://github.com/AjayKumarPatnaikuni/pyserverinfo-service.git'
     }
@@ -21,7 +19,6 @@ node {
     }
     stage("build docker image"){
         sh 'docker build -t ajju13/pyserverinfo-service:${BUILD_NUMBER} .'
-   
     }
     stage("trivy image scan"){
         sh 'trivy image --format table -o pyserverinfo-service-image-report.html ajju13/pyserverinfo-service:${BUILD_NUMBER}'
