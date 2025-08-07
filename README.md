@@ -5,11 +5,6 @@ This is Implementation of an automated CI/CD pipeline for deploying containerize
 ## Architecture
 ![Architecture](images/architecture.png)
 
-## Workflow
-![Architecture](images/workflow.gif)
-
-
-
 The objective of this project is to automate the build and deployment pipeline with integrated monitoring using the following tools and services:
 - **GitHub**: Store and manage source code repositories and trigger CI on commits.
 - **Jenkins**: Build application code, run tests, build Docker images, and push to container registry.
