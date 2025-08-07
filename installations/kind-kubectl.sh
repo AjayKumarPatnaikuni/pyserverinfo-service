@@ -1,7 +1,5 @@
 #!/bin/bash
 sudo apt-get update -y
-sudo apt-get install -y wget git docker.io
-sudo usermod -aG docker $USER && sudo newgrp docker
 
 #kind installation
 # For AMD64 / x86_64
@@ -13,7 +11,7 @@ echo "kind installation complete."
 
 #kubectl installation
 # Variables
-VERSION="v1.30.0"
+VERSION="v1.30.0" #change the version as needed by your requirements
 
 # Download and install kubectl
 curl -LO "https://dl.k8s.io/release/${VERSION}/bin/linux/amd64/kubectl"
@@ -21,14 +19,8 @@ chmod +x kubectl
 sudo mv kubectl /usr/local/bin/
 kubectl version --client
 
-# Clean up
-rm -f kubectl
-
-echo "kubectl installation complete."
-
-#installing helm
+# Helm installation
+# Download and install Helm
 curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
 sudo chmod 700 get_helm.sh
 sudo ./get_helm.sh
-
-echo "helm installation complete."

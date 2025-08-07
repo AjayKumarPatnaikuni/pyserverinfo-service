@@ -3,17 +3,18 @@
 
 ### Installation of Jenkins, Docker, Trivy
 
-- Create a file with name "**jenkins.sh**" and copy the code from "**jenkins.sh**", save and exit.
-- Provide the executable permissions to "**jenkins.sh**"
+- Create a file with name "**installations.sh**" and copy the code from "**installations.sh**", save and exit.
+- Provide the executable permissions to "**installations.sh**"
   ```
-  sudo chmod +x jenkins.sh
-  ./jenkins.sh
+  sudo chmod +x installations.sh
+  ./installations.sh
   ```
 - Now verify the installed packages are running or not
   ```
   sudo docker --version
   systemctl status docker
   systemctl status jenkins
+  docker ps -a
   ```
 ### Installation of kind
 - Install the kind by executing below commands.
@@ -30,7 +31,7 @@
   ```
   kind --version
   ```
-  ref: https://kind.sigs.k8s.io/docs/user/quick-start/#installation
+Ref: https://kind.sigs.k8s.io/docs/user/quick-start/#installation
 ### Installation of kubectl
 - Install the kubectl by executing below commands
   ```
@@ -41,8 +42,7 @@
   sudo mv kubectl /usr/local/bin/
   kubectl version --client
   ```
-  ref: https://kubernetes.io/docs/tasks/tools/
-
+Ref: https://kubernetes.io/docs/tasks/tools/
 ### Installation of Helm
 - Install the helm by executing below commands
   ```
@@ -50,7 +50,8 @@
   sudo chmod 700 get_helm.sh
   sudo ./get_helm.sh
   ```
-  ref: https://helm.sh/docs/intro/install/
+Ref: https://helm.sh/docs/intro/install/
+
 
   **Note**: If you want to install as a script create a file with name "**kind-kubectl.sh**" and copy from "**kind-kubectl.sh**", save and exit.
   provide the executable peramissions and run the script
@@ -60,17 +61,17 @@
   ```
 
 ### Provisioning kubernetes cluster with kind
-- Create a configuration file **config.yml** to create multimode cluster and paste the below configuration.
+- Create a configuration file **config.yml** to create multi-node cluster and paste the below configuration.
   ```
   kind: Cluster
   apiVersion: kind.x-k8s.io/v1alpha4
   nodes:
   - role: control-plane
-    image: kindest/node:v1.30.0
+    image: kindest/node:v1.30.0 # Ensure this matches the kubectl version
   - role: worker
-    image: kindest/node:v1.30.0
+    image: kindest/node:v1.30.0 # Ensure this matches the kubectl version
   - role: worker
-    image: kindest/node:v1.30.0
+    image: kindest/node:v1.30.0 # Ensure this matches the kubectl version
   ```
 - Create cluster with name “webapp” by executing below command.
   ```
@@ -83,7 +84,7 @@
   ```
 Ref: https://kind.sigs.k8s.io/docs/user/configuration/
 
-### Installation of ArgoCD with Helm
+### Installation of ArgoCD
 - Create a new **namespace** with name “**argocd**” in cluster.
   ```
   kubectl create namespace argocd
@@ -100,7 +101,7 @@ Ref: https://kind.sigs.k8s.io/docs/user/configuration/
   ```
   kubectl edit svc argocd-server -n argocd
   ```
-- To access argocd server, we need to do port forwarding.
+- To access argocd server, we need to expose its port.
   ```
   kubectl port-forward -n argocd service/argocd-server 8090:443 --address=0.0.0.0 &
   ```
@@ -122,11 +123,15 @@ Ref: https://kind.sigs.k8s.io/docs/user/configuration/
   - **ClusterURL**: https://kubernetes.default.svc
   - **Namespace**: default
  Click on create.
+- Now verify the objects created by argocd, and expose pyserverinfo-svc to access in browser.
+  ```
+  kubectl get svc
+  kubectl port-forward svc/pyserverinfo-svc 30231:30231 --address=0.0.0.0 &
+  ```
 
 # Phase-2
 ##  Monitor Jenkins, ArgoCD with Prometheus and Grafana
-
-### Installation of Prometheus and Grafana with helm
+### Deployment of Prometheus via helm
 - Create namespace **monitoring**.
   ```
   kubectl create namespace monitoring
@@ -151,36 +156,21 @@ Ref: https://kind.sigs.k8s.io/docs/user/configuration/
   ```
   access the prometheus server in browser by "public i.p of instance:9090"
 
-- Add, Update, and install the **Grafana** via helm chart.
+### Deployment of Grafana via Docker
+- Create grafana container.
   ```
-  helm repo add grafana https://grafana.github.io/helm-charts
-  helm repo update
-  helm install grafana grafana/grafana --namespace monitoring
+  docker run -d --name=grafana -p 3000:3000 grafana/grafana
   ```
-- Verify the **grafana** service
-  ```
-  kubectl get svc -n monitoring
-  ```
-- Now expose the grafana service from clusterIP to Nodeport. Find the "**ClusterIp**" in "**grafana**" service and replace it with "**NodePort**".
-  ```
-  kubectl edit svc grafana -n monitoring
-  ```
-- Now expose and forward the **grafana** service port to 8089 to access it on browser.
-  ```
-  kubectl port-forward svc/grafana 8089:80 -n monitoring --address=0.0.0.0 &
-  ```
-access the grafana in browser by "public i.p of instance:8089" and username will be "**admin**".
-- To get the grafana password execute below command, copy and save it.
-  ```
-  kubectl get secret --namespace monitoring grafana -o jsonpath="{.data.admin-password}" | base64 --decode ; echo
-  ```
-**Note**: Default grafana username is "**admin**"
+- Access the grafana in browser by **serverip:3000**. #replace **serverip** with your ip.
+- Default login credentials to access grafana are **admin/admin**. Once loggedin reset the password.
+
+Ref: https://hub.docker.com/r/grafana/grafana
 
 ### Add Prometheus as Datasource in Grafana
 - Go to grafana UI --> Datasource --> Add Datasource --> select "prometheus"
 - Under "**connection**" section provide **prometheus url**, click on **save & test**.
 
-### Configuration & Visualization  of Jenkins metrics  in Prometheus & Grafana
+### Configuration of Jenkins, argocd metrics  in Prometheus
 - Navigate to Jenkins UI --> Manage Jenkins --> plugins
 - Search for **Prometheus metrics plugin**, install and then restart the jenkins. 
 - Go to Jenkins UI --> Manage Jenkins --> System --> Prometheus, and make sure that below configurations existed.
@@ -193,12 +183,20 @@ access the grafana in browser by "public i.p of instance:8089" and username will
   ```
   kubectl get cm -n monitoring
   ```
-- Add the below configuration for  Jenkins server as target in scrape_configs section.
+- Add the below configuration for  Jenkins server as target under scrape_configs section.
   ```
+  - job_name: 'argocd'
+    static_configs:
+      - targets:
+          - 'argocd-metrics.argocd.svc.cluster.local:8082'                 
+          - 'argocd-repo-server.argocd.svc.cluster.local:8084'                  
+          - 'argocd-server-metrics.argocd.svc.cluster.local:8083'              
+          - 'argocd-notifications-controller-metrics.argocd.svc.cluster.local:9001'
+		  
   - job_name: 'jenkins'
     metrics_path: '/prometheus/'
     static_configs:
-      - targets: ['3.6.39.97:8080'] ##add your jenkins server url
+      - targets: ['15.206.153.19:8080']  #Replace with your jenkins server url
   ```
 - Identify the Prometheus server pod name and delete it and wait for it to restart.
   ```
@@ -209,43 +207,18 @@ access the grafana in browser by "public i.p of instance:8089" and username will
   ```
   kubectl port-forward svc/prometheus-server -n monitoring 9090:80 --address=0.0.0.0 &
   ```
-- Verify  Jenkins was added to the prometheus targets by browsing "Prometheus server ip:9090/targets"
+- Verify  jenkins, argocd endpoints were added to the prometheus targets by browsing "Prometheus server ip:9090/targets"
+- Now validate jenkins, argocd endpoints to the targets, by **prometheusserverip:9090/tagets**. # Replace with your prometheus server ip.
+
+### Visualization  of Jenkins, argocd metrics  in Grafana
+**Jenkins**
 - Go to GrafanaUI --> Dashboards --> select **import** option from the drop down list on **new**.
 - Enter “**9964**” as id and click on **load**.
 - Select "**prometheus**" as datasource and click on **import**.
 - Now Go to dashboards, click on jenins dashboard and verify the jenkins metrics such as jobs, executors, etc. from dashboard panels.
-### Configuration & Visualization  of ArgoCD metrics  in Prometheus & Grafana
-- Verify the Argocd server metrics are exposed on 8082.
-  ```
-  kubectl get svc -n monitoring
-  ```
-- Verify the Prometheus-server configmap add the argocd server as target in scrape_configs section.
-  ```
-  kubectl get cm -n monitoring
-  kubectl edit cm prometheus-server -n monitoring
-  ```
-- Add the below configuration for  Argocd  server as target in scrape_configs section.
-  ```
-  - job_name: 'argocd'
-    static_configs:
-      - targets:
-          - argocd-metrics.argocd.svc.cluster.local:8082                      
-          - argocd-repo-server.argocd.svc.cluster.local:8084                  
-          - argocd-server-metrics.argocd.svc.cluster.local:8083          
-          - argocd-dex-server.argocd.svc.cluster.local:5556                 
-          - argocd-notifications-controller-metrics.argocd.svc.cluster.local:9001
-  ```      
-- Identify the Prometheus server pod name and delete it and wait for it to restart.
-  ```
-  kubectl get pods –n monitoring
-  kubectl delete pod prometheus-server-646498f746-vf794 -n monitoring  #replace it with your pod name
-  ```
-- Once pod restarts,  port forward and expose port 9090 to access it on browser.
-  ```
-  kubectl port-forward svc/prometheus-server -n monitoring 9090:80 --address=0.0.0.0 &
-  ```
-- Verify ArgoCD was added to the prometheus targets by browsing "Prometheus server ip:9090/targets"
-- Go to GrafanaUI --> Dashboards --> select **import** option from the drop down list on **new**.
+
+**Argocd**
+-  Go to GrafanaUI --> Dashboards --> select **import** option from the drop down list on **new**.
 - Enter “**14584**” as id and click on **load**, and then click on **import**.
 - Go to dashboards, click on argocd dashboard and verify the argocd metrics such as cluster, application etc.
 

@@ -11,13 +11,13 @@ spec:
       app: webapp
   template:
     metadata:
-      labels:        # ✅ Corrected here
+      labels: 
         app: webapp
     spec:
       imagePullSecrets:
         - name: regcred
       containers:
         - name: webapp
-          image: ajju13/pyserverinfo-service:36
+          image: ajju13/pyserverinfo-service:5
           ports:
             - containerPort: 3000
