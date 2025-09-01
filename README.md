@@ -3,7 +3,7 @@ This is Server information micro service developed using Python and Flask Framew
 This is Implementation of an automated CI/CD pipeline for deploying containerized applications using "**GitHub, Jenkins, Docker, ArgoCD, Kubernetes**" and monitor with "**Prometheus, and Grafana**".
 
 ## Architecture
-![Architecture](images/architecture.png)
+![Architecture](images/workflow.gif)
 
 The objective of this project is to automate the build and deployment pipeline with integrated monitoring using the following tools and services:
 - **GitHub**: Store and manage source code repositories and trigger CI on commits.
